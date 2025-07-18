@@ -11,5 +11,5 @@
 mod home;
 pub use home::Home;
 
-mod setup;
-pub use setup::Setup;
+mod play;
+pub use play::Play;

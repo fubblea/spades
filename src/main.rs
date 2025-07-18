@@ -10,7 +10,9 @@ mod state;
 mod views;
 
 use state::AppState;
-use views::{Home, Setup};
+use views::{Home, Play};
+
+static APP_STATE: GlobalSignal<AppState> = Global::new(|| AppState::default());
 
 /// The Route enum is used to define the structure of internal routes in our app. All route enums need to derive
 /// the [`Routable`] trait, which provides the necessary methods for the router to work.
@@ -24,8 +26,8 @@ enum Route {
     // the component for that route will be rendered. The component name that is rendered defaults to the variant name.
     #[route("/")]
     Home {},
-    #[route("/setup")]
-    Setup {},
+    #[route("/play")]
+    Play {},
 }
 
 // We can import assets in dioxus with the `asset!` macro. This macro takes a path to an asset relative to the crate root.
@@ -47,7 +49,6 @@ fn main() {
 /// Components should be annotated with `#[component]` to support props, better error messages, and autocomplete
 #[component]
 fn App() -> Element {
-    use_context_provider(|| AppState::default());
     // The `rsx!` macro lets us define HTML inside of rust. It expands to an Element with all of our HTML inside.
     rsx! {
         // In addition to element and text (which we will see later), rsx can contain other components. In this case,
