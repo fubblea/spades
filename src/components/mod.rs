@@ -3,3 +3,6 @@
 //! component and an Echo component for fullstack apps to be used in our app.
 mod big_button;
 pub use big_button::BigButton;
+
+mod typing;
+pub use typing::Title;

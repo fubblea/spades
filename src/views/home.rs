@@ -1,4 +1,5 @@
 use crate::components::BigButton;
+use crate::components::Title;
 use crate::Route;
 use dioxus::prelude::*;
 
@@ -10,28 +11,20 @@ pub fn Home() -> Element {
         div {
             class: "flex flex-col h-[80vh]",
             div {
-                title {
-                    class: "flex justify-center items-center",
-                    "Spades"
-                }
+                Title {
+                    text: "Spades Scorer".to_string(),
+                },
                 p {
-                    class: "text-center text-lg",
-                    "A simple spades game built with Dioxus and Rust. Select a mode to start playing or scoring a game."
+                    class: "text-center",
+                    "A simple app to keep track of your Spades game scores."
                 }
             }
-
             div {
-                class: "flex flex-1 flex-row items-center justify-center gap-4",
+                class: "flex-1 flex justify-center items-center p-8",
                 BigButton {
-                    label: "Play Game".to_string(),
+                    label: "New Game".to_string(),
                     on_click: move |_| {
-                        navigator.push(Route::PlayGameSetup {});
-                    }
-                }
-                BigButton {
-                    label: "Score Game".to_string(),
-                    on_click: move |_| {
-                        navigator.push(Route::ScoreGameSetup {});
+                        navigator.push(Route::Setup {});
                     }
                 }
             }

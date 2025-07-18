@@ -10,7 +10,7 @@ mod state;
 mod views;
 
 use state::AppState;
-use views::{Home, PlayGameSetup, ScoreGameSetup};
+use views::{Home, Setup};
 
 /// The Route enum is used to define the structure of internal routes in our app. All route enums need to derive
 /// the [`Routable`] trait, which provides the necessary methods for the router to work.
@@ -24,10 +24,8 @@ enum Route {
     // the component for that route will be rendered. The component name that is rendered defaults to the variant name.
     #[route("/")]
     Home {},
-    #[route("/play-game/setup")]
-    PlayGameSetup {},
-    #[route("/score-game/setup")]
-    ScoreGameSetup {},
+    #[route("/setup")]
+    Setup {},
 }
 
 // We can import assets in dioxus with the `asset!` macro. This macro takes a path to an asset relative to the crate root.

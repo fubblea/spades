@@ -11,8 +11,5 @@
 mod home;
 pub use home::Home;
 
-mod play_game;
-pub use play_game::PlayGameSetup;
-
-mod score_game;
-pub use score_game::ScoreGameSetup;
+mod setup;
+pub use setup::Setup;
