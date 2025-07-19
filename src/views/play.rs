@@ -34,6 +34,8 @@ pub fn Play() -> Element {
     let update_round_phase = || APP_STATE.read().get_round_phase().clone();
     let mut round_phase = use_signal(|| update_round_phase());
 
+    let refresh = use_signal(|| 0);
+
     rsx! {
         TitleBar {
             title: title.read(),

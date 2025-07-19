@@ -118,6 +118,8 @@ impl AppState {
                 self.leader_score = team.score;
                 round_winner = Some(i);
             }
+
+            team.round_hands = 0; // Reset hands won for the next round
         });
 
         match round_winner {

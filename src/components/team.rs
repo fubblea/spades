@@ -29,6 +29,10 @@ pub fn TeamComponent(props: TeamProps) -> Element {
     };
     let mut team = use_signal(|| update_team(props.idx.clone()));
 
+    use_effect(move || {
+        *team.write() = update_team(props.idx);
+    });
+
     rsx! {
         div {
             class: class,
