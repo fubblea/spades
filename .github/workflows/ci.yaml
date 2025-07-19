@@ -6,24 +6,45 @@ on:
       - main
 
 jobs:
+  init:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          path: init/
+      - name: Get Version
+        id: get_version
+        run: |
+          cd init
+          cargo build
+          echo "version=$(cargo pkgid | cut -d "@" -f2)" >> "$GITHUB_OUTPUT"
+          echo "# Init Summary" >> $GITHUB_STEP_SUMMARY
+          echo "Found package version: $(cargo pkgid | cut -d "@" -f2)"  >> $GITHUB_STEP_SUMMARY
+
   build-and-deploy:
     runs-on: ubuntu-latest
+    needs:
+      - init
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          path: deploy/
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker image
-        run: |
-          docker build -t ghcr.io/${{ github.repository }}:latest --progress=plain .
-
-      - name: Push Docker image
-        run: |
-          docker push ghcr.io/${{ github.repository }}:latest
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: deploy/
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.version }}, ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
