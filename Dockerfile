@@ -1,4 +1,5 @@
-FROM lukemathwalker/cargo-chef:latest-rust-1.88-trixie AS chef
+FROM rust:latest AS chef
+RUN cargo install cargo-chef --locked
 WORKDIR /app
 
 FROM chef AS planner
@@ -28,7 +29,7 @@ RUN npm install tailwindcss @tailwindcss/cli && \
 RUN dx bundle --platform web
 
 FROM chef AS runtime
-COPY --from=builder /app/target/dx/hot_dog/release/web/ /usr/local/app
+COPY --from=builder /app/target/dx/spades/release/web/ /usr/local/app
 
 # set our port and make sure to listen for all connections
 ENV PORT=8080
