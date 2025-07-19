@@ -14,12 +14,7 @@ COPY . .
 RUN npm install tailwindcss @tailwindcss/cli && \
     npx tailwindcss -i ./input.css -o ./assets/tailwind.css
 
-ENV PORT=8100
-ENV IP=0.0.0.0
-
-EXPOSE 8100
-
-RUN dx bundle --platform web --release --output target/dx/spades/release/web/
+RUN dx bundle --platform web --release
 
 FROM debian:bookworm-slim AS runtime
 COPY --from=builder /app/target/dx/spades/release/web/ /usr/local/app
