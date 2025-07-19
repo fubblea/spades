@@ -1,35 +1,27 @@
-FROM rust:latest AS chef
-RUN cargo install cargo-chef --locked
-WORKDIR /app
-
-FROM chef AS planner
-COPY . .
-RUN cargo chef prepare --recipe-path recipe.json
-
-FROM chef AS builder
-COPY --from=planner /app/recipe.json recipe.json
+FROM rust:latest AS builder
 
 # Install deps
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt update -y && \
-    apt install nodejs libgtk-3-dev -y
+    apt install nodejs -y && \
+    curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && \
+    cargo binstall dioxus-cli
 
-RUN cargo chef cook --release --recipe-path recipe.json
+WORKDIR /app
 COPY . .
-
-# Install `dx`
-RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
-RUN cargo binstall dioxus-cli --root /.cargo -y --force
-ENV PATH="/.cargo/bin:$PATH"
 
 # Build tailwindcss
 RUN npm install tailwindcss @tailwindcss/cli && \
-    npx tailwindcss -i /app/input.css -o /app/assets/tailwind.css
+    npx tailwindcss -i ./input.css -o ./assets/tailwind.css
 
-# Create the final bundle folder. Bundle always executes in release mode with optimizations enabled
-RUN dx bundle --platform web
+ENV PORT=8100
+ENV IP=0.0.0.0
 
-FROM chef AS runtime
+EXPOSE 8100
+
+RUN dioxus bundle --platform web --release --output target/dx/spades/release/web/
+
+FROM debian:bookworm-slim AS runtime
 COPY --from=builder /app/target/dx/spades/release/web/ /usr/local/app
 
 # set our port and make sure to listen for all connections
