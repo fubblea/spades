@@ -1,6 +1,6 @@
 [package]
 name = "spades"
-version = "1.0.1"
+version = "1.0.2"
 authors = ["fubblea <ajay.arthur@gmail.com>"]
 edition = "2021"
 

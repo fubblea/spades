@@ -29,6 +29,7 @@ jobs:
           echo "Found package version: $version"  >> $GITHUB_STEP_SUMMARY
 
   build-and-deploy:
+    environment: production
     runs-on: ubuntu-latest
     permissions:
       contents: read
