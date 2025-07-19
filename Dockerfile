@@ -1,4 +1,4 @@
-FROM rust:slim-bullseye
+FROM rust:bullseye
 
 # Install deps
 RUN apt update && \
