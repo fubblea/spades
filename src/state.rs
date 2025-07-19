@@ -21,6 +21,7 @@ pub struct AppState {
     round: u32,
     round_phase: RoundPhase,
     teams: Vec<Team>,
+    leader_score: u32,
 }
 
 impl AppState {
@@ -30,11 +31,18 @@ impl AppState {
             round: 1,
             round_phase: RoundPhase::Setup,
             teams: Vec::new(),
+            leader_score: 0,
         }
     }
 
     pub fn get_teams(&self) -> &Vec<Team> {
         &self.teams
+    }
+
+    pub fn get_team(&self, idx: usize) -> &Team {
+        self.teams
+            .get(idx)
+            .expect(format!("Attempted to access non-existent team at index {}", idx).as_str())
     }
 
     pub fn add_team(&mut self) {
@@ -52,6 +60,9 @@ impl AppState {
     }
 
     pub fn next_round(&mut self) {
+        self.update_round_scores();
+        self.update_delta_leader();
+
         self.round += 1;
         self.round_phase = RoundPhase::Setup;
         tracing::info!("Next round: {}", self.round);
@@ -94,10 +105,50 @@ impl AppState {
         }
     }
 
+    fn update_round_scores(&mut self) {
+        self.leader_score = 0;
+        let mut round_winner: Option<usize> = None;
+
+        self.teams.iter_mut().enumerate().for_each(|(i, team)| {
+            if team.round_hands >= team.contract {
+                team.score += 10 * team.contract + (team.round_hands - team.contract);
+            }
+
+            if team.score > self.leader_score {
+                self.leader_score = team.score;
+                round_winner = Some(i);
+            }
+        });
+
+        match round_winner {
+            Some(winner_idx) => {
+                self.teams[winner_idx].rounds_won += 1;
+                tracing::info!(
+                    "Team {} won the round with score {}",
+                    winner_idx + 1,
+                    self.teams[winner_idx].score
+                );
+            }
+            None => tracing::warn!("No team won the round"),
+        }
+    }
+
+    fn update_delta_leader(&mut self) {
+        self.teams.iter_mut().for_each(|team| {
+            team.delta_leader = team.score as i32 - self.leader_score as i32;
+            tracing::info!(
+                "Team score: {}, Delta Leader: {}",
+                team.score,
+                team.delta_leader
+            );
+        });
+    }
+
     pub fn reset(&mut self) {
         self.round = 1;
         self.teams.clear();
         self.round_phase = RoundPhase::Setup;
+        self.leader_score = 0;
 
         tracing::info!(
             "AppState reset: round {}, teams len {}",
