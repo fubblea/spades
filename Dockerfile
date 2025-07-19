@@ -1,8 +1,9 @@
 FROM rust:bullseye
 
 # Install deps
-RUN apt update && \
-    apt install -y npm nodejs && \
+RUN curl -fsSL https://deb.nodesource.com/setup_17.x | sudo -E bash - && \
+    apt update -y && \
+    apt install nodejs -y && \
     curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && \
     cargo binstall dioxus-cli
 
