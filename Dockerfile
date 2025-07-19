@@ -11,7 +11,7 @@ COPY --from=planner /app/recipe.json recipe.json
 # Install deps
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt update -y && \
-    apt install nodejs libgtk-3-dev -y
+    apt install nodejs libgtk-3-dev libwebkit2gtk-4.1-dev libsoup3.0-dev -y
 
 RUN cargo chef cook --release --recipe-path recipe.json
 COPY . .
