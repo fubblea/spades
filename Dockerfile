@@ -3,7 +3,8 @@ FROM rust:slim-bullseye
 # Install deps
 RUN apt update && \
     apt install -y npm nodejs && \
-    cargo install dioxus-cli
+    curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && \
+    cargo binstall dioxus-cli
 
 WORKDIR /app
 COPY . .
