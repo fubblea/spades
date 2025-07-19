@@ -12,7 +12,7 @@ mod views;
 use state::AppState;
 use views::{Home, Play};
 
-static APP_STATE: GlobalSignal<AppState> = Global::new(|| AppState::default());
+static APP_STATE: GlobalSignal<AppState> = Global::new(|| AppState::new());
 
 /// The Route enum is used to define the structure of internal routes in our app. All route enums need to derive
 /// the [`Routable`] trait, which provides the necessary methods for the router to work.
