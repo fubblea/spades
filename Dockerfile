@@ -18,7 +18,7 @@ ENV PATH="/.cargo/bin:$PATH"
 # Install tailwind
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt update -y && \
-    apt install nodejs -y
+    apt install nodejs libgtk-3-dev -y
 
 # Build tailwindcss
 RUN npm install tailwindcss @tailwindcss/cli && \
