@@ -19,7 +19,7 @@ ENV IP=0.0.0.0
 
 EXPOSE 8100
 
-RUN dioxus bundle --platform web --release --output target/dx/spades/release/web/
+RUN dx bundle --platform web --release --output target/dx/spades/release/web/
 
 FROM debian:bookworm-slim AS runtime
 COPY --from=builder /app/target/dx/spades/release/web/ /usr/local/app
