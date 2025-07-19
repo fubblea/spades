@@ -12,3 +12,6 @@ pub use incrementer::Incrementer;
 
 mod title_bar;
 pub use title_bar::TitleBar;
+
+mod team;
+pub use team::TeamComponent;

@@ -1,8 +1,12 @@
 use dioxus::logger::tracing;
 
-#[derive(Debug, Clone, Default)]
+#[derive(PartialEq, Debug, Clone, Default)]
 pub struct Team {
-    score: u32,
+    pub contract: u32,
+    pub score: u32,
+    pub rounds_won: u32,
+    pub round_hands: u32,
+    pub delta_leader: i32,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -31,10 +35,6 @@ impl AppState {
 
     pub fn get_teams(&self) -> &Vec<Team> {
         &self.teams
-    }
-
-    pub fn get_team(&self, index: usize) -> Option<&Team> {
-        self.teams.get(index)
     }
 
     pub fn add_team(&mut self) {
@@ -66,8 +66,36 @@ impl AppState {
         tracing::info!("Round started: {}", self.round);
     }
 
+    pub fn update_team_contract(&mut self, idx: usize, contract: u32) {
+        if let Some(team) = self.teams.get_mut(idx) {
+            team.contract = contract;
+            tracing::info!("Updated team {} contract to {}", idx + 1, contract);
+        } else {
+            tracing::warn!(
+                "Attempted to update contract for non-existent team {}",
+                idx + 1
+            );
+        }
+    }
+
+    pub fn team_won_hand(&mut self, idx: usize) {
+        if let Some(team) = self.teams.get_mut(idx) {
+            team.round_hands += 1;
+            tracing::info!(
+                "Noted team {} won hand, won hands now: {}",
+                idx + 1,
+                team.round_hands
+            );
+        } else {
+            tracing::warn!(
+                "Attempted to update won hands for non-existent team {}",
+                idx + 1
+            );
+        }
+    }
+
     pub fn reset(&mut self) {
-        self.round = 0;
+        self.round = 1;
         self.teams.clear();
         self.round_phase = RoundPhase::Setup;
 

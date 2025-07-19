@@ -1,14 +1,26 @@
-use dioxus::prelude::*;
+use dioxus::{logger::tracing, prelude::*};
 
-use crate::{components::TitleBar, state::RoundPhase, APP_STATE};
+use crate::{
+    components::{TeamComponent, TitleBar},
+    state::RoundPhase,
+    APP_STATE,
+};
 
 #[component]
 pub fn Play() -> Element {
+    const NUM_COLS: usize = 3;
+
+    let update_num_teams = || APP_STATE.read().get_teams().len();
+    let num_teams = use_signal(|| update_num_teams());
+
+    let num_rows = use_signal(|| (*num_teams.read() as f32 / NUM_COLS as f32).ceil() as usize);
+    tracing::info!("Num rows: {}", num_rows);
+
     let update_title = || format!("Round: {}", APP_STATE.read().get_round());
     let mut title = use_signal(|| update_title());
 
     let update_subtitle = || match APP_STATE.read().get_round_phase() {
-        RoundPhase::Setup => "Setup",
+        RoundPhase::Setup => "Setup (Set contracts and click 'Start Round' to begin)",
         RoundPhase::Play => "Playing",
     };
     let mut subtitle = use_signal(|| update_subtitle());
@@ -33,13 +45,21 @@ pub fn Play() -> Element {
 
         div {
             id: "play_area",
-            class: "flex flex-col items-center justify-center p-4",
+            class: "flex flex-col items-center justify-center p-4 w-full",
             div {
-                class: "grid grid-cols-2 grid-rows-2 gap-4 w-full max-w-md mb-8 h-[65vh]",
-                h1 {"Hi"}
-                h1 {"Hi"}
-                h1 {"Hi"}
-                h1 {"Hi"}
+                class: format!(
+                    "w-full grid grid-rows-{} grid-cols-{} gap-4 items-center justify-center",
+                    NUM_COLS, *num_rows.read() // TODO: Fix this
+                )
+                ,
+                {APP_STATE.read().get_teams().iter().enumerate().map(|(i, _)| rsx! {
+                    div {
+                        id: format!("team_{}", i + 1),
+                        class: "flex flex-col p-4",
+                        h1 { "Team: {i+1}" }
+                        TeamComponent{idx: i}
+                    }
+                })}
             }
             div {
                 class: "w-full flex justify-center mt-4",
