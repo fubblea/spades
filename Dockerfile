@@ -14,9 +14,9 @@ COPY . .
 RUN npm install tailwindcss @tailwindcss/cli && \
     npx tailwindcss -i ./input.css -o ./assets/tailwind.css
 
-ENV PORT=8080
+ENV PORT=8100
 ENV IP=0.0.0.0
 
-EXPOSE 8080
+EXPOSE 8100
 
 ENTRYPOINT [ "dx", "serve", "--platform", "web", "--release"]
