@@ -39,12 +39,6 @@ impl AppState {
         &self.teams
     }
 
-    pub fn get_team(&self, idx: usize) -> &Team {
-        self.teams
-            .get(idx)
-            .expect(format!("Attempted to access non-existent team at index {}", idx).as_str())
-    }
-
     pub fn add_team(&mut self) {
         self.teams.push(Team::default());
         tracing::info!("Added team, new teams len: {}", self.teams.len());
