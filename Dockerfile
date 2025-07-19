@@ -1,4 +1,5 @@
-FROM lukemathwalker/cargo-chef:latest-rust-1.88-trixie AS chef
+FROM rust:latest AS chef
+RUN cargo install cargo-chef --locked
 WORKDIR /app
 
 FROM chef AS planner
