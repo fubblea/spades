@@ -3,7 +3,7 @@ FROM rust:bullseye
 # Install deps
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt update -y && \
-    apt install nodejs -y && \
+    apt install nodejs libssl-dev -y && \
     curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && \
     cargo binstall dioxus-cli
 
