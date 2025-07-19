@@ -1,4 +1,6 @@
-# Spades
+# Spades Scorer
+
+A simple scoring app for the card game Spades, built with [Dioxus](https://dioxuslabs.com/).
 
 ## Development
 
